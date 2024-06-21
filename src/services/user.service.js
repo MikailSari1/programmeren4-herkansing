@@ -56,7 +56,7 @@ const userService = {
             }
 
             connection.query(
-                'SELECT id, firstName, lastName FROM `user`',
+                'SELECT * FROM `user`',
                 function (error, results, fields) {
                     connection.release()
 
@@ -161,9 +161,20 @@ const userService = {
                         }
 
                         const setClause = columnsToUpdate.join(', ')
+                        console.log(typeof userId)
                         const sql = `UPDATE user SET ${setClause} WHERE id = ?`
 
-                        const values = [...valuesToUpdate, userId]
+                        const values = [
+                            ...valuesToUpdate.map((value, index) => {
+                              if (typeof value === 'boolean') {
+                                return value ? 1 : 0;
+                              } else if (Array.isArray(value)) {
+                                return value.join(',');
+                              }
+                              return value;
+                            }),
+                            parseInt(userId)
+                          ];
 
             connection.query(sql, values, (error, results) => {
                 connection.release();

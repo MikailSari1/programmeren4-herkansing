@@ -15,18 +15,18 @@ const mealService = {
             const isVega = meal.isVega  === 1 ? 1 : 0
             const isVegan = meal.isVegan === 1 ? 1 : 0
             const isToTakeHome = meal.isToTakeHome  === 0 ? 0 : 1
-            // const dateTime = meal.dateTime
+            const dateTime = meal.dateTime
             const maxAmountOfParticipants = meal.maxAmountOfParticipants ? meal.maxAmountOfParticipants : 6;
             const price = meal.price
             const imageUrl = meal.imageUrl
             const name = meal.name
             const description = meal.description
             const allergenes = meal.allergenes
-            logger.trace(isVegan, isVega, isToTakeHome, maxAmountOfParticipants, price, imageUrl, userId, name, description, allergenes)
+            logger.trace(isVegan, isVega, isToTakeHome, dateTime, maxAmountOfParticipants, price, imageUrl, userId, name, description, allergenes)
 
                 connection.query(
-                    'INSERT INTO meal (isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, cookId, createDate, updateDate, name, description, allergenes) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), ?, ?, ?)',
-                    [isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, userId, name, description, allergenes],
+                    'INSERT INTO meal (isVega, isVegan, isToTakeHome, dateTime, maxAmountOfParticipants, price, imageUrl, cookId, createDate, updateDate, name, description, allergenes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), ?, ?, ?)',
+                    [isVega, isVegan, isToTakeHome, dateTime, maxAmountOfParticipants, price, imageUrl, userId, name, description, allergenes],
             function (error, results, fields) {
                     connection.release();
 

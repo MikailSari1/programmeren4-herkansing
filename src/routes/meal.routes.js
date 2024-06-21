@@ -107,8 +107,8 @@ const validateMealCreateChaiExpect = (req, res, next) => {
 };
 
 router.post('/api/meal', validateToken, validateMealCreateChaiExpect, mealController.createMeal)
-router.get('/api/meal', mealController.getAll)
+router.get('/api/meal', validateToken, mealController.getAll)
 router.get('/api/meal/:mealId', validateToken, mealController.getById)
-router.put('/api/meal/:mealId', mealController.updateMeal)
-router.delete('/api/meal/:mealId', mealController.deleteMeal)
+router.put('/api/meal/:mealId', validateToken, mealController.updateMeal)
+router.delete('/api/meal/:mealId', validateToken, mealController.deleteMeal)
 module.exports = router
