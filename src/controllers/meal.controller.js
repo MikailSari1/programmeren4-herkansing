@@ -67,7 +67,7 @@ let userController = {
     deleteMeal: (req, res, next) => {
         const mealId = req.params.mealId;
         logger.info('delete meal', mealId);
-        mealService.delete(mealId, (error, success) => {
+        mealService.deleteMeal(mealId, (error, success) => {
             if (error) {
                 return next({
                     status: error.status,
@@ -88,7 +88,7 @@ let userController = {
         const mealId = req.params.mealId;
         const meal = req.body;
         logger.info('update meal', mealId);
-        mealService.update(mealId, meal, (error, success) => {
+        mealService.updateMeal(mealId, meal, (error, success) => {
             if (error) {
                 return next({
                     status: error.status,
