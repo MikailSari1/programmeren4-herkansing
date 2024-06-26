@@ -21,6 +21,17 @@ app.use(userRoutes);
 app.use('/api/auth', authRoutes);
 app.use(mealRoutes);
 
+// info route
+app.get('/api/info', (req, res) => {
+  console.log('GET /api/info')
+  const info = {
+      nameOfStudent: 'Mikail Sari',
+      studentId: '2215079',
+      description: 'Dit is een API app gemaakt op maaltijden te plannen.'
+  }
+  res.json(info)
+})
+
 // Welcome message for the root route
 app.get('/', (req, res) => {
   res.status(200).json({

@@ -10,6 +10,26 @@ tracer.setLevel('warn');
 const endpointToTest = '/api/auth/login';
 const expect = require('chai').expect;
 
+const jwt = require('jsonwebtoken');
+const jwtSecretKey = require('../src/util/config').secretkey;
+
+let authToken = '';
+
+before((done) => {
+    const payload = {
+        userId: '2',
+    };
+
+    jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' }, (err, token) => {
+        if (err) {
+            done(err);
+        } else {
+            authToken = token;
+            done();
+        }
+    });
+});
+
 describe('UC101 Inloggen', () => {
     beforeEach((done) => {
         console.log('Before each test');
@@ -115,7 +135,7 @@ describe('UC101 Inloggen', () => {
                 password: 'secret'
             })
             .end((err, res) => {
-                console.log('Response body:', res.body);  // Log response body for debugging
+                console.log('Response booty:', res.body);  // Log response body for debugging
                 console.log('Response status:', res.status);  // Log status code for debugging
 
                 chai.expect(res).to.have.status(200);  // Expecting 200 status code

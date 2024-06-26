@@ -14,7 +14,7 @@ const userService = {
             }
 
             connection.query(
-                `INSERT INTO user (firstName, lastName, emailAdress, password, isActive, street, city, phoneNumber, roles) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?);` ,
+                `INSERT INTO user (firstName, lastName, emailAdress, password, isActive, street, city, phoneNumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?);` ,
                 [
                     user.firstName,
                     user.lastName,

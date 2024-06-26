@@ -22,6 +22,26 @@ const endpointToTest = '/api/user'
 //   falseToken = jwt.sign({ id: "99999"}, jwtSecretKey)
 // });
 
+const jwt = require('jsonwebtoken');
+const jwtSecretKey = require('../../src/util/config').secretkey;
+
+let authToken = '';
+
+before((done) => {
+    const payload = {
+        userId: '2',
+    };
+
+    jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' }, (err, token) => {
+        if (err) {
+            done(err);
+        } else {
+            authToken = token;
+            done();
+        }
+    });
+});
+
 describe("UC-204 Opvragen van usergegevens bij ID", function () {
 
     it("TC-204-1 Ongeldig token", function () {
@@ -41,7 +61,7 @@ describe("UC-204 Opvragen van usergegevens bij ID", function () {
       chai
         .request(server)
         .get("/api/user/100")
-        // .set("Authorization", `Bearer ${token}`)
+        .set("Authorization", `Bearer ${authToken}`)
         .end(async function (err, response) {
           chai.expect(response).to.have.header("content-type", /json/);
           chai.expect(response).status(404);
@@ -54,7 +74,7 @@ describe("UC-204 Opvragen van usergegevens bij ID", function () {
       chai
         .request(server)
         .get("/api/user/1")
-        // .set("Authorization", `Bearer ${token}`)
+        .set("Authorization", `Bearer ${authToken}`)
         .end(async function (err, response) {
           chai.expect(response).to.have.header("content-type", /json/);
           chai.expect(response).status(200);

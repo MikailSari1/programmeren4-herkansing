@@ -10,7 +10,7 @@ const validateUserCreateChaiExpect = (req, res, next) => {
         const {
             firstName,
             lastName,
-            emailAddress,
+            emailAdress,
             password,
             isActive,
             street,
@@ -25,16 +25,30 @@ const validateUserCreateChaiExpect = (req, res, next) => {
         assert.ok(typeof lastName === 'string', 'lastName should be a string');
         assert.strictEqual(typeof lastName, 'string', 'lastName should be a string');
 
-        assert.ok(typeof emailAddress === 'string', 'emailAddress should be a string');
-        assert.strictEqual(typeof emailAddress, 'string', 'emailAddress should be a string');
-        assert.ok(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(emailAddress), 'emailAddress should match the pattern');
+        // assert.ok(typeof emailAddress === 'string', 'emailAddress should be a string');
+        // assert.strictEqual(typeof emailAddress, 'string', 'emailAddress should be a string');
+        // assert.ok(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(emailAddress), 'emailAddress should match the pattern');
 
-        assert.ok(typeof password === 'string', 'password should be a string');
-        assert.strictEqual(typeof password, 'string', 'password should be a string');
-        assert.ok(/^(?=.*[A-Z])(?=.*[0-9]).{8,}$/.test(password), 'password should match the pattern');
+        assert.ok(emailAdress, 'Missing or incorrect emailAddress field');
+        assert.strictEqual(typeof emailAdress, 'string', 'Missing or incorrect emailAddress field');
+        assert.ok(
+            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(emailAdress),
+            'Missing or incorrect emailAddress field'
+        );
 
-        assert.ok(typeof isActive === 'boolean', 'isActive should be a boolean');
-        assert.strictEqual(typeof isActive, 'boolean', 'isActive should be a boolean');
+        // assert.ok(typeof password === 'string', 'password should be a string');
+        // assert.strictEqual(typeof password, 'string', 'password should be a string');
+        // assert.ok(/^(?=.*[A-Z])(?=.*[0-9]).{8,}$/.test(password), 'password should match the pattern');
+
+        assert.ok(password, 'Missing or incorrect password field');
+        assert.strictEqual(typeof password, 'string', 'Missing or incorrect password field');
+        assert.ok(
+            /^(?=.*[A-Z])(?=.*[0-9]).{8,}$/.test(password),
+            'Missing or incorrect password field'
+        );
+
+        // assert.ok(typeof isActive === 'boolean', 'isActive should be a boolean');
+        // assert.strictEqual(typeof isActive, 'boolean', 'isActive should be a boolean');
 
         assert.ok(typeof street === 'string', 'street should be a string');
         assert.strictEqual(typeof street, 'string', 'street should be a string');
@@ -46,8 +60,8 @@ const validateUserCreateChaiExpect = (req, res, next) => {
         assert.strictEqual(typeof phoneNumber, 'string', 'phoneNumber should be a string');
         assert.ok(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/.test(phoneNumber), 'phoneNumber should match the pattern');
 
-        assert.ok(Array.isArray(roles), 'roles should be an array');
-        assert.strictEqual(Array.isArray(roles), true, 'roles should be an array');
+        // assert.ok(Array.isArray(roles), 'roles should be an array');
+        // assert.strictEqual(Array.isArray(roles), true, 'roles should be an array');
 
         // If all assertions pass, move to the next middleware
         next();

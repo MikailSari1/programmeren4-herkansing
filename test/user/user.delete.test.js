@@ -22,6 +22,25 @@ const endpointToTest = '/api/user'
 //     token = jwt.sign({ id: "1" }, jwtSecretKey);
 //   });
   
+const jwt = require('jsonwebtoken');
+const jwtSecretKey = require('../../src/util/config').secretkey;
+
+let authToken = '';
+
+before((done) => {
+    const payload = {
+        userId: '2',
+    };
+
+    jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' }, (err, token) => {
+        if (err) {
+            done(err);
+        } else {
+            authToken = token;
+            done();
+        }
+    });
+});
 
 describe("UC-206 Verwijderen van user", function () {
 
@@ -29,7 +48,7 @@ describe("UC-206 Verwijderen van user", function () {
       chai
       .request(server)
       .delete("/api/user/1")
-    //   .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${authToken}`)
       .end(async function (err, response) {
         chai.expect(response).to.have.header("content-type", json);
         chai.expect(response).status(404);
@@ -74,7 +93,7 @@ describe("UC-206 Verwijderen van user", function () {
       chai
         .request(server)
         .delete("/api/user/1")
-        // .set("Authorization", `Bearer ${token}`)
+        .set("Authorization", `Bearer ${authToken}`)
         .end(async function (err, response) {
           chai.expect(response).to.have.header("content-type", /json/);
           chai.expect(response).status(200);

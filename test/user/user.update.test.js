@@ -21,6 +21,26 @@ const endpointToTest = '/api/user'
 
 //     token = jwt.sign({ id: "1" }, jwtSecretKey);
 //   });
+
+const jwt = require('jsonwebtoken');
+const jwtSecretKey = require('../../src/util/config').secretkey;
+
+let authToken = '';
+
+before((done) => {
+    const payload = {
+        userId: '2',
+    };
+
+    jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' }, (err, token) => {
+        if (err) {
+            done(err);
+        } else {
+            authToken = token;
+            done();
+        }
+    });
+});
   
 
 describe("UC-205 Wijzigen van user", function() {
@@ -28,7 +48,7 @@ describe("UC-205 Wijzigen van user", function() {
       chai
       .request(server)
       .put("/api/user/1")
-    //   .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${authToken}`)
       .send({
         firstName: "Mikail",
         lastName: "Sari",
@@ -50,7 +70,7 @@ describe("UC-205 Wijzigen van user", function() {
       chai
       .request(server)
       .put("/api/user/1")
-    //   .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${authToken}`)
       .send({
         firstName: "Mikail",
         lastName: "Sari",
@@ -72,7 +92,7 @@ describe("UC-205 Wijzigen van user", function() {
       chai
       .request(server)
       .put("/api/user/1")
-    //   .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${authToken}`)
       .send({
         firstName: "Mikail",
         lastName: "Sari",
@@ -95,7 +115,7 @@ describe("UC-205 Wijzigen van user", function() {
       chai
       .request(server)
       .put("/api/user/1")
-    //   .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${authToken}`)
       .send({
         firstName: "Mikail",
         lastName: "Sari",
