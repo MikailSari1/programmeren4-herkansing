@@ -56,7 +56,7 @@ describe('UC203 Opvragen van gebruikersprofiel', () => {
     it('TC-203-2 Gebruiker is ingelogd met geldig token', (done) => {
         chai
             .request(server)
-            .get(`${endpointToTest}?name=henk}`)
+            .get(`${endpointToTest}?name=Markk}`)
             .set('Authorization', `Bearer ${authToken}`)
             .send({})
             .end((err, res) => {
