@@ -59,10 +59,10 @@ const validateUserCreateChaiExpect = (req, res, next) => {
 
 
 // Userroutes
-router.post('/api/user', validateToken, validateUserCreateChaiExpect, userController.create)
-router.get('/api/user', validateToken, userController.getAll)
-router.get('/api/user/profile', validateToken, userController.getProfile)
-router.get('/api/user/:userId', validateToken, userController.getById)
+router.post('/api/user', validateUserCreateChaiExpect, userController.create);
+router.get('/api/user', validateToken, userController.getAll);
+router.get('/api/user/profile', validateToken, userController.getProfile);
+router.get('/api/user/:userId', validateToken, userController.getById);
 router.put('/api/user/:userId', validateToken, userController.updateUser);
 router.delete('/api/user/:userId', validateToken, userController.deleteUser);
 
