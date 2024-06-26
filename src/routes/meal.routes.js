@@ -13,8 +13,7 @@ const validateMealCreateChaiExpect = (req, res, next) => {
             isVega,
             isVegan,
             isToTakeHome,
-            // dateTime,
-            maxAmountOfParticipants,
+            // maxAmountOfParticipants,
             price,
             imageUrl,
             name,
@@ -22,79 +21,23 @@ const validateMealCreateChaiExpect = (req, res, next) => {
             allergenes
         } = req.body;
 
-        assert.strictEqual(
-            typeof isVega,
-            'number',
-            'isVega should be a number'
-        )
-        assert.strictEqual(
-            isVega === 0 || isVegan === 1,
-            true,
-            'isVega should be either 0 or 1'
-        )
-
-        assert.strictEqual(
-            typeof isVegan,
-            'number',
-            'isVegan should be a number'
-        )
-        assert.strictEqual(
-            isVegan === 0 || isVegan === 1,
-            true,
-            'isVegan should be either 0 or 1'
-        )
-
-        assert.strictEqual(
-            typeof isToTakeHome,
-            'number',
-            'isToTakeHome should be a number'
-        )
-        assert.strictEqual(
-            isToTakeHome === 0 || isVegan === 1,
-            true,
-            'isToTakeHome should be either 0 or 1'
-        )
-
-        // assert.ok(maxAmountOfParticipants, 'maxAmountOfParticipants should not be empty');
-        // assert.strictEqual(
-        //     typeof maxAmountOfParticipants,
-        //     'number',
-        //     'maxAmountOfParticipants should be a number'
-        // );
-        // assert.strictEqual(maxAmountOfParticipants > 0, true, 'maxAmountOfParticipants should be a positive number')
-
+        assert.strictEqual(typeof isVega,'number','isVega should be a number')
+        assert.strictEqual(isVega === 0 || isVegan === 1,true,'isVega should be either 0 or 1')
+        assert.strictEqual(typeof isVegan,'number','isVegan should be a number')
+        assert.strictEqual(isVegan === 0 || isVegan === 1,true,'isVegan should be either 0 or 1')
+        assert.strictEqual(typeof isToTakeHome,'number','isToTakeHome should be a number')
         logger.trace(typeof price)
         assert.ok(price, 'price should not be empty');
-        assert.strictEqual(
-            typeof price,
-            'number',
-            'price should be a number'
-        )
-        assert.strictEqual(
-            price > 0,
-            true,
-            'price should be a positive number'
-        )
-
-
-        // assert.ok(imageUrl, 'imageUrl should not be empty')
-        assert.strictEqual(typeof imageUrl, 'string', 'imageUrl should be a string')
-
+        assert.strictEqual(typeof price,'number','price should be a number')
+        assert.strictEqual(price > 0,true,'price should be a positive number')
+        assert.strictEqual(isToTakeHome === 0 || isVegan === 1,true,'isToTakeHome should be either 0 or 1')
         assert.ok(name, 'name should not be empty')
         assert.strictEqual(typeof name, 'string', 'name should be a string')
-
-        // assert.ok(description, 'description should not be empty')
-        assert.strictEqual(
-            typeof description,
-            'string',
-            'description should be a string'
-        )
+        assert.strictEqual(typeof imageUrl, 'string', 'imageUrl should be a string')
+        assert.strictEqual(typeof description,'string','description should be a string')
         const validAllergenes = new Set(['gluten', 'lactose', 'noten'])
-        assert.strictEqual(
-            validAllergenes.has(allergenes),
-            true,
-            'allergenes should only accept values "gluten", "lactose", or "noten"'
-        )
+        assert.strictEqual(validAllergenes.has(allergenes), true,'allergenes should only accept values "gluten", "lactose", or "noten"')
+    
 
         next();
     } catch (err) {
@@ -104,6 +47,8 @@ const validateMealCreateChaiExpect = (req, res, next) => {
             error: err.toString(),
         });
     }
+
+    
 };
 
 router.post('/api/meal', validateToken, validateMealCreateChaiExpect, mealController.createMeal)
