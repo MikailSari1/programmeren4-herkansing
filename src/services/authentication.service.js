@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken')
 const db = require('../dao/mysql-db')
-// const validateEmail = require('../util/emailvalidator')
 const logger = require('../util/logger')
 const jwtSecretKey = require('../util/config').secretkey
 
@@ -22,15 +21,21 @@ const authController = {
                         connection.release()
                         if (err) {
                             logger.error('Error: ', err.toString())
-                            callback(error.message, null)
-                        }
-                        if (rows) {
+                            callback(err.message, null)
+                        } else if (rows.length === 0) {
+                            // No user found
+                            logger.debug('User not found')
+                            callback(
+                                {
+                                    status: 404,
+                                    message: 'User not found',
+                                    data: {}
+                                },
+                                null
+                            )
+                        } else {
                             // 2. Er was een resultaat, check het password.
-                            if (
-                                rows &&
-                                rows.length === 1 &&
-                                rows[0].password == userCredentials.password
-                            ) {
+                            if (rows[0].password == userCredentials.password) {
                                 logger.debug(
                                     'passwords DID match, sending userinfo and valid token'
                                 )
@@ -46,15 +51,20 @@ const authController = {
                                     jwtSecretKey,
                                     { expiresIn: '12d' },
                                     (err, token) => {
-                                        logger.info(
-                                            'User logged in, sending: ',
-                                            userinfo
-                                        )
-                                        callback(null, {
-                                            status: 200,
-                                            message: 'User logged in',
-                                            data: { ...userinfo, token }
-                                        })
+                                        if (err) {
+                                            logger.error('Error: ', err.toString())
+                                            callback(err.message, null)
+                                        } else {
+                                            logger.info(
+                                                'User logged in, sending: ',
+                                                userinfo
+                                            )
+                                            callback(null, {
+                                                status: 200,
+                                                message: 'User logged in',
+                                                data: { ...userinfo, token }
+                                            })
+                                        }
                                     }
                                 )
                             } else {
@@ -77,7 +87,6 @@ const authController = {
             }
         })
     }
-
 }
 
 module.exports = authController

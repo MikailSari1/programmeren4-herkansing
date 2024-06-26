@@ -55,6 +55,7 @@ const validateLogin = (req, res, next) => {
     } catch (err) {
         return res.status(400).json({
             status: 400,
+            message: err.message,
             error: err.toString(),
         });
     }
