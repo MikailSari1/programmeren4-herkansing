@@ -43,6 +43,7 @@ describe('UC203 Opvragen van gebruikersprofiel', () => {
         chai
             .request(server)
             .get(endpointToTest)
+            // .set('Authorization', `Bearer ${authToken}`)
             .send({})
             .end((err, res) => {
                 expect(res).to.have.status(401);

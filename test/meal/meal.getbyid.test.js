@@ -34,6 +34,7 @@ describe("UC-304 Opvragen van maaltijd bij ID", function () {
       chai
         .request(server)
         .get("/api/meal/999999999")
+        .set("Authorization", `Bearer ${authToken}`)
         .end(async function (err, response) {
           chai.expect(response).to.have.header("content-type", /json/);
           chai.expect(response).status(404);
@@ -49,6 +50,7 @@ describe("UC-304 Opvragen van maaltijd bij ID", function () {
       chai
         .request(server)
         .get("/api/meal/1")
+        .set("Authorization", `Bearer ${authToken}`)
         .end(async function (err, response) {
           chai.expect(response).to.have.header("content-type", /json/);
           chai.expect(response).status(200);

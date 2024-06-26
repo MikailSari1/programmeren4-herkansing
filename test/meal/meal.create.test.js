@@ -77,6 +77,7 @@ describe("UC-301 Toevoegen van maaltijd", function () {
           isActive: false,
           maxAmountParticipants: 1,
         })
+        .set("Authorization", `Bearer ${authToken}`)
         .end(async function (err, response) {
           chai.expect(response).to.have.header("content-type", /json/);
           chai.expect(response).status(401);

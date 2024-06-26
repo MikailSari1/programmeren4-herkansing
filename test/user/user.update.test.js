@@ -137,6 +137,7 @@ describe("UC-205 Wijzigen van user", function() {
       chai
       .request(server)
       .put("/api/user/1")
+      .set("Authorization", `Bearer ${authToken}`)
       .send({
         firstName: "Mikail",
         lastName: "Sari",
@@ -157,7 +158,9 @@ describe("UC-205 Wijzigen van user", function() {
     it("TC-205-6 Gebruiker successvol gewijzigd", function () {
       chai
       .request(server)
-      .put("/api/user/1").send({
+      .put("/api/user/1")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({
         firstName: "Mikail",
         lastName: "Sari",
         city: "Roosendaal",

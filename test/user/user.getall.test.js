@@ -9,6 +9,26 @@ tracer.setLevel('warn')
 
 const endpointToTest = '/api/user'
 
+const jwt = require('jsonwebtoken');
+const jwtSecretKey = require('../../src/util/config').secretkey;
+
+
+let authToken = '';
+
+before((done) => {
+    const payload = {
+        userId: '2',
+    };
+
+    jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' }, (err, token) => {
+        if (err) {
+            done(err);
+        } else {
+            authToken = token;
+            done();
+        }
+    });
+});
 
 describe("UC-202 Opvragen van overzicht van users", function () {
 
@@ -16,6 +36,7 @@ describe("UC-202 Opvragen van overzicht van users", function () {
       chai
         .request(server)
         .get("/api/user")
+        .set("Authorization", `Bearer ${authToken}`)
         .end(async function (err, response) {
           chai.expect(response).to.have.header("content-type", /json/);
           chai.expect(response).status(200);
@@ -28,6 +49,7 @@ describe("UC-202 Opvragen van overzicht van users", function () {
       chai
         .request(server)
         .get("/api/user?animal=Monkey")
+        .set("Authorization", `Bearer ${authToken}`)
         .end(async function (err, response) {
           chai.expect(response).to.have.header("content-type", /json/);
           chai.expect(response).status(200);
@@ -40,6 +62,7 @@ describe("UC-202 Opvragen van overzicht van users", function () {
       chai
         .request(server)
         .get("/api/user?isActive=False")
+        .set("Authorization", `Bearer ${authToken}`)
         .end(async function (err, response) {
           chai.expect(response).to.have.header("content-type", /json/);
           chai.expect(response).status(200);
@@ -52,6 +75,7 @@ describe("UC-202 Opvragen van overzicht van users", function () {
       chai
         .request(server)
         .get("/api/user?isActive=True")
+        .set("Authorization", `Bearer ${authToken}`)
         .end(async function (err, response) {
           chai.expect(response).to.have.header("content-type", /json/);
           chai.expect(response).status(200);
@@ -64,6 +88,7 @@ describe("UC-202 Opvragen van overzicht van users", function () {
       chai
         .request(server)
         .get("/api/user?city=Roosendaal&street=Gerard doustraat")
+        .set("Authorization", `Bearer ${authToken}`)
         .end(async function (err, response) {
           chai.expect(response).to.have.header("content-type", /json/);
           chai.expect(response).status(200);
