@@ -34,14 +34,14 @@ Installeer de benodigde npm-pakketten:
 
 Code kopiëren
 
-npm install
+`npm install`
 
 # Server Starten
 Start de server in je lokale ontwikkelomgeving met het volgende commando:
 
 
 Code kopiëren
-npm run dev
+`npm run dev`
 De server zal op poort 3000 draaien tenzij anders gespecificeerd.
 
 # Testen
@@ -49,7 +49,7 @@ Om de tests van het project uit te voeren, gebruik je het volgende commando:
 
 
 Code kopiëren
-npm test
+`npm test`
 Dit zal de tests uitvoeren en je feedback geven over de werking van je code.
 
 # Afhankelijkheden
