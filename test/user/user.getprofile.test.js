@@ -1,71 +1,71 @@
-// const chai = require('chai');
-// const chaiHttp = require('chai-http');
-// const server = require('../../index');
-// const tracer = require('tracer');
-// const jwt = require('jsonwebtoken');
-// const jwtSecretKey = require('../../src/util/config').secretkey;
-// const { expect } = chai;
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const server = require('../../index');
+const tracer = require('tracer');
+const jwt = require('jsonwebtoken');
+const jwtSecretKey = require('../../src/util/config').secretkey;
+const { expect } = chai;
 
-// chai.should();
-// chai.use(chaiHttp);
+chai.should();
+chai.use(chaiHttp);
 
-// tracer.setLevel('warn');
+tracer.setLevel('warn');
 
-// const endpointToTest = '/api/user/profile';
+const endpointToTest = '/api/user/profile';
 
-// let authToken = '';
+let authToken = '';
 
-// before((done) => {
-//     const payload = {
-//         userId: '2',
-//     };
+before((done) => {
+    const payload = {
+        userId: '2',
+    };
 
-//     jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' }, (err, token) => {
-//         if (err) {
-//             done(err);
-//         } else {
-//             authToken = token;
-//             done();
-//         }
-//     });
-// });
+    jwt.sign(payload, jwtSecretKey, { expiresIn: '1h' }, (err, token) => {
+        if (err) {
+            done(err);
+        } else {
+            authToken = token;
+            done();
+        }
+    });
+});
 
-// describe('UC203 Opvragen van gebruikersprofiel', () => {
-//     beforeEach((done) => {
-//         console.log('Before each test');
-//         done();
-//     });
+describe('UC203 Opvragen van gebruikersprofiel', () => {
+    beforeEach((done) => {
+        console.log('Before each test');
+        done();
+    });
 
-//     /**
-//      * Hier starten de testcases
-//      */
-//     it('TC-203-1 Ongeldig token', (done) => {
-//         chai
-//             .request(server)
-//             .get(endpointToTest)
-//             // .set('Authorization', `Bearer ${authToken}`)
-//             .send({})
-//             .end((err, res) => {
-//                 expect(res).to.have.status(401);
-//                 expect(res.body.status).to.equal(401);
-//                 expect(res.body.message).to.equal('Authorization header missing!');
+    /**
+     * Hier starten de testcases
+     */
+    it('TC-203-1 Ongeldig token', (done) => {
+        chai
+            .request(server)
+            .get(endpointToTest)
+            // .set('Authorization', `Bearer ${authToken}`)
+            .send({})
+            .end((err, res) => {
+                expect(res).to.have.status(401);
+                expect(res.body.status).to.equal(401);
+                expect(res.body.message).to.equal('Authorization header missing!');
 
-//                 done();
-//             });
-//     });
+                done();
+            });
+    });
 
-//     it('TC-203-2 Gebruiker is ingelogd met geldig token', (done) => {
-//         chai
-//             .request(server)
-//             .get(`${endpointToTest}?name=Markk}`)
-//             .set('Authorization', `Bearer ${authToken}`)
-//             .send({})
-//             .end((err, res) => {
-//                 expect(res).to.have.status(200);
-//                 expect(res.body.status).to.equal(200);
+    it('TC-203-2 Gebruiker is ingelogd met geldig token', (done) => {
+        chai
+            .request(server)
+            .get(`${endpointToTest}?name=Markk}`)
+            .set('Authorization', `Bearer ${authToken}`)
+            .send({})
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res.body.status).to.equal(200);
 
-//                 done();
-//             });
-//     });
+                done();
+            });
+    });
 
-// });
+});
