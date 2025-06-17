@@ -21,39 +21,131 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: npm install, build, and test
+      - name: npm install and build
         run: |
           npm install
-          npm run build --if-present
-          npm run test --if-present
+          npm run build --if-present # Only build here
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact for test and deployment jobs
         uses: actions/upload-artifact@v4
         with:
           name: node-app
           path: release.zip
 
+  test: # This job will run tests on the built artifact
+    runs-on: ubuntu-latest
+    needs: build # Depends on the build job completing successfully
+
+    env: # IMPORTANT: Environment variables for the entire job are defined here
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_DATABASE: ${{ secrets.DB_DATABASE }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: node-app
+
+      - name: Unzip artifact for tests
+        run: unzip release.zip
+
+      - name: Set up Node.js (needed to run npm commands)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Match your build job's Node.js version
+
+      - name: Install dependencies (if not included in artifact, or if tests have their own dependencies)
+        run: npm install
+
+      - name: Install MySQL Client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mysql-client
+
+      - name: Debug Database Connection
+        run: |
+          echo "Attempting to connect to MySQL with the following details:"
+          echo "Host: $DB_HOST"
+          echo "Port: $DB_PORT"
+          echo "User: $DB_USER"
+          echo "DB Name: $DB_DATABASE" # Note: DB_DATABASE isn't used in the mysql connection check for basic connectivity, but useful for context.
+          # Password is intentionally not echoed for security, as it would be masked anyway.
+
+          echo "Running command: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$DB_USER\" -p\"\$DB_PASSWORD\" -e \"SELECT 1\""
+
+          # Attempt to connect, capture output for debugging
+          # The 'set +e' temporarily disables exiting on error for this specific line
+          # The '2>&1' redirects stderr to stdout so it's captured in the variable
+          set +e
+          CONNECTION_OUTPUT=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASSWORD" -e "SELECT 1" 2>&1)
+          CONNECTION_EXIT_CODE=$?
+          set -e # Re-enable exiting on error
+
+          echo "MySQL command exit code: $CONNECTION_EXIT_CODE"
+          echo "MySQL command output:"
+          echo "$CONNECTION_OUTPUT"
+
+          if [ $CONNECTION_EXIT_CODE -eq 0 ]; then
+            echo "Direct connection test successful!"
+          else
+            echo "Direct connection test failed. See output above for details."
+            # Optionally, if you want the workflow to fail immediately for debugging:
+            # exit 1
+          fi
+
+      - name: Wait for database to be ready (Loop)
+        run: |
+          echo "Starting the loop to wait for MySQL..."
+          for i in $(seq 1 10); do # Reduce attempts for faster feedback during debugging
+            echo "Attempt $i: Checking MySQL connection..."
+            # Use the environment variables directly, not secrets again
+            # Redirect only stderr to /dev/null to still see "MySQL is ready!"
+            if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASSWORD" -e "SELECT 1" 2>/dev/null; then
+              echo "MySQL database is ready!"
+              break
+            fi
+            echo "Waiting for MySQL... ($i/10)"
+            sleep 10
+          done
+
+          # Final check to fail the workflow if the database is not ready after attempts
+          if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASSWORD" -e "SELECT 1" &>/dev/null; then
+            echo "Error: MySQL database not reachable after multiple attempts. Failing job."
+            exit 1
+          fi
+
+      - name: Run tests
+        run: npm test
+
+
+
+      - name: Run tests
+        run: npm test
+
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: test
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write
 
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+      - name: Download artifact for deployment
+        uses: actions/download-artifact@v4
         with:
           name: node-app
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
-      
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -68,4 +160,3 @@ jobs:
           app-name: 'share-a-meal2'
           slot-name: 'Production'
           package: .
-          
