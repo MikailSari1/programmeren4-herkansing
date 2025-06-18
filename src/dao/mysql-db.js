@@ -11,10 +11,16 @@ const dbConfig = {
 
     connectionLimit: 10,
     waitForConnections: true,
-    connectionLimit: 10,
     queueLimit: 0,
     multipleStatements: true
 }
+
+logger.error('--- DEBUG: Environment Variables on startup ---');
+logger.error('process.env.DB_HOST:', process.env.DB_HOST);
+logger.error('process.env.DB_PORT:', process.env.DB_PORT);
+logger.error('process.env.DB_USER:', process.env.DB_USER);
+logger.error('process.env.DB_DATABASE:', process.env.DB_DATABASE);
+logger.error('--- END DEBUG ---');
 
 logger.trace(dbConfig)
 
