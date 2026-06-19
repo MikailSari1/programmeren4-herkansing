@@ -18,6 +18,11 @@ describe('UC201 Registreren als nieuwe user', () => {
         done()
     })
 
+
+    /**
+     * Voorbeeld van een beforeEach functie.
+     * Hiermee kun je code hergebruiken of initialiseren.
+     */
     it("TC-201-1 Verplicht veld ontbreekt", function () {
         chai
           .request(server)
