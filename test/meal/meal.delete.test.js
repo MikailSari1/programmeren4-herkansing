@@ -31,6 +31,7 @@ before((done) => {
 
 describe("UC-305 Verwijderen van maaltijd", function () {
 
+    // test voor deployment GEEN CODE IS VERANDERD!!!
     it("TC-305-1 Niet ingelogd", function () {
       chai
         .request(server)
